@@ -2,7 +2,6 @@
 window.SOIREE = {
   script: "https://script.google.com/macros/s/AKfycbykQzmfFL99tNruKyummbVysCfZEnruXd0GdLVhG9ShirhCi2_2F4-GxgTYm5JuvuJT1g/exec",
   accueil: {
-    surtitre: "Chère Cynthia,",
     titre: "Une soirée rien qu’à nous",
     texte: "Titia, dis-moi ce qui te ferait plaisir.",
     action: "Commencer"
@@ -69,7 +68,7 @@ window.SOIREE = {
     }
   ],
   fin: {
-    surtitre: "Pour toi",
+    surtitre: "Ton ti chum",
     texte: "Merci, vos réponses seront peut-être prises en considération. Votre appel est important pour nous."
   },
   continuer: "Continuer",

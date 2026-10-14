@@ -47,7 +47,6 @@
   function dessinerAccueil() {
     var bloc = carte();
     bloc.append(
-      element("p", "salut", config.accueil.surtitre),
       element("span", "marque"),
       element("h1", null, config.accueil.titre),
       element("p", "texte", config.accueil.texte)
@@ -128,7 +127,7 @@
   function dessinerFin() {
     var bloc = carte();
     bloc.append(
-      element("p", "surtitre", config.fin.surtitre),
+      element("p", "surtitre signature", config.fin.surtitre),
       element("span", "marque"),
       element("h1", null, config.fin.texte)
     );
