@@ -84,20 +84,35 @@
     });
 
     bloc.append(lecture, points, element("h1", null, question.titre));
+    if (question.plusieurs && question.indication) {
+      bloc.append(element("p", "texte", question.indication));
+    }
 
     question.choix.forEach(function (libelle, position) {
-      var bouton = element("button", "choix", libelle);
+      var bouton = element("button", question.plusieurs ? "choix multiple" : "choix", libelle);
       bouton.type = "button";
-      bouton.setAttribute("aria-pressed", reponses[index] === libelle ? "true" : "false");
+      bouton.setAttribute("aria-pressed", estChoisie(question, reponses[index], libelle) ? "true" : "false");
       bouton.addEventListener("click", function () {
-        reponses[index] = libelle;
-        var boutons = bloc.querySelectorAll(".choix");
-        boutons.forEach(function (autre, autrePosition) {
-          autre.setAttribute("aria-pressed", autrePosition === position ? "true" : "false");
-        });
+        if (question.plusieurs) {
+          var choisis = Array.isArray(reponses[index]) ? reponses[index].slice() : [];
+          var place = choisis.indexOf(libelle);
+          if (place === -1) {
+            choisis.push(libelle);
+          } else {
+            choisis.splice(place, 1);
+          }
+          reponses[index] = choisis;
+          bouton.setAttribute("aria-pressed", place === -1 ? "true" : "false");
+        } else {
+          reponses[index] = libelle;
+          var boutons = bloc.querySelectorAll(".choix");
+          boutons.forEach(function (autre, autrePosition) {
+            autre.setAttribute("aria-pressed", autrePosition === position ? "true" : "false");
+          });
+        }
         var suite = bloc.querySelector("[data-action='suivant']");
         if (suite) {
-          suite.disabled = false;
+          suite.disabled = !aUneReponse(question, reponses[index]);
         }
       });
       bloc.append(bouton);
@@ -107,7 +122,7 @@
     var suivant = element("button", "principal", config.continuer);
     suivant.type = "button";
     suivant.dataset.action = "suivant";
-    suivant.disabled = !reponses[index];
+    suivant.disabled = !aUneReponse(question, reponses[index]);
     suivant.addEventListener("click", avancer);
     actions.append(suivant);
 
@@ -135,15 +150,41 @@
     focusTitre();
   }
 
+  function estChoisie(question, valeur, libelle) {
+    if (question.plusieurs) {
+      return Array.isArray(valeur) && valeur.indexOf(libelle) !== -1;
+    }
+    return valeur === libelle;
+  }
+
+  function aUneReponse(question, valeur) {
+    if (question.plusieurs) {
+      return Array.isArray(valeur) && valeur.length > 0;
+    }
+    return Boolean(valeur);
+  }
+
+  function reponseValide(question, valeur) {
+    if (!question) {
+      return false;
+    }
+    if (question.plusieurs) {
+      return Array.isArray(valeur) && valeur.every(function (libelle) {
+        return question.choix.indexOf(libelle) !== -1;
+      });
+    }
+    return question.choix.indexOf(valeur) !== -1;
+  }
+
   function avancer() {
-    if (!reponses[index]) {
+    if (!aUneReponse(questionAffichee(index), reponses[index])) {
       return;
     }
     if (index < config.questions.length - 1) {
       index += 1;
       var suivante = questionAffichee(index);
-      if (!suivante || suivante.choix.indexOf(reponses[index]) === -1) {
-        reponses[index] = undefined;
+      if (!reponseValide(suivante, reponses[index])) {
+        reponses[index] = suivante && suivante.plusieurs ? [] : undefined;
       }
       dessiner();
       return;
@@ -166,7 +207,11 @@
     var corps = new URLSearchParams();
     config.questions.forEach(function (_, position) {
       var question = questionAffichee(position);
-      corps.set(question.titre, reponses[position]);
+      var valeur = reponses[position];
+      if (Array.isArray(valeur)) {
+        valeur = valeur.join("\n");
+      }
+      corps.set(question.titre, valeur);
     });
 
     fetch(script, {

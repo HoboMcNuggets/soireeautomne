@@ -60,6 +60,8 @@ window.SOIREE = {
     },
     {
       titre: "Pour finir en beauté, qu'est-ce qu'on fait en soirée...",
+      plusieurs: true,
+      indication: "Tu peux en choisir plusieurs.",
       choix: [
         "Visite guidée des décorations d'Halloween de la ville de Québec",
         "J'ai le goût de sentir l'odeur agréable (not) du fleuve",
