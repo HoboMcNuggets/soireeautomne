@@ -2,6 +2,7 @@
 window.SOIREE = {
   script: "https://script.google.com/macros/s/AKfycbykQzmfFL99tNruKyummbVysCfZEnruXd0GdLVhG9ShirhCi2_2F4-GxgTYm5JuvuJT1g/exec",
   accueil: {
+    date: "24 octobre 2026",
     titre: "Une soirée rien qu’à nous",
     texte: "Titia, dis-moi ce qui te ferait plaisir.",
     action: "Commencer"

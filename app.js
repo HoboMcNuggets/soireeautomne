@@ -47,6 +47,7 @@
   function dessinerAccueil() {
     var bloc = carte();
     bloc.append(
+      element("p", "date", config.accueil.date),
       element("span", "marque"),
       element("h1", null, config.accueil.titre),
       element("p", "texte", config.accueil.texte)

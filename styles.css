@@ -68,6 +68,13 @@ body {
   text-transform: none;
 }
 
+.date {
+  margin: 0 0 0.45rem;
+  color: var(--or);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
 .marque {
   display: block;
   width: 2.4rem;
