@@ -10,14 +10,66 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link id="style-soiree" rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      var cle = "soiree-partie";
+      var enCours = false;
+      var adresse = new URL(window.location.href);
+      var marque = adresse.searchParams.get("r");
+
+      if (marque) {
+        document.getElementById("style-soiree").href = "styles.css?r=" + encodeURIComponent(marque);
+      }
+
+      function recharger() {
+        if (enCours) {
+          return;
+        }
+        enCours = true;
+        sessionStorage.removeItem(cle);
+        adresse.searchParams.set("r", String(Date.now()));
+        window.location.replace(adresse.href);
+      }
+
+      if (sessionStorage.getItem(cle) === "1") {
+        recharger();
+        return;
+      }
+
+      document.addEventListener("visibilitychange", function () {
+        if (enCours) {
+          return;
+        }
+        if (document.visibilityState === "hidden") {
+          sessionStorage.setItem(cle, "1");
+          return;
+        }
+        if (sessionStorage.getItem(cle) === "1") {
+          recharger();
+        }
+      });
+
+      window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          recharger();
+        }
+      });
+    })();
+  </script>
 </head>
 <body>
   <main id="app" aria-live="polite"></main>
   <noscript>
     <p class="secours">Cette page a besoin de JavaScript pour afficher les questions.</p>
   </noscript>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script>
+    (function () {
+      var marque = new URL(window.location.href).searchParams.get("r");
+      var suffixe = marque ? "?r=" + encodeURIComponent(marque) : "";
+      document.write("<script src=\"config.js" + suffixe + "\"><\/script>");
+      document.write("<script src=\"app.js" + suffixe + "\"><\/script>");
+    })();
+  </script>
 </body>
 </html>
